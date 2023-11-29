@@ -106,17 +106,44 @@ app.post('/api/users/:_id/exercises', async function (req, res) {
     let listOfMonth = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
     let date;
 
+    let options = {
+      weekday: 'short',
+      day: 'numeric',
+      month: 'short',
+      year: 'numeric',      
+    };
+
+    let formatter = new Intl.DateTimeFormat('en-US', options);
+    const formattedDate = formatter.format(date);
+    const formattedDateWithoutCommas = formattedDate.replace(/,/g, '');
+
+    let dates = new Date();
+
     if (!datePosted) {
       let requestDate = new Date();
-      let getDay = requestDate.getDay();
-      let getMonth = requestDate.getMonth();  
-      date = `${listOfDays[getDay]} ${listOfMonth[getMonth]} ${requestDate.getDate()} ${requestDate.getFullYear()}`
+      let rawdate = formatter.format(requestDate);
+      let dateFormat = rawdate.replace(/,/g, '');
+      const [weekday, month, day, year] = dateFormat.split(' ');
+      date =`${weekday} ${month.padStart(2, '0')} ${day.padStart(2, '0')} ${year}`;
     } else {
       let requestDate = new Date(datePosted);
-      let getDay = requestDate.getDay();
-      let getMonth = requestDate.getMonth();  
-      date = `${listOfDays[getDay]} ${listOfMonth[getMonth]} ${requestDate.getDate()} ${requestDate.getFullYear()}`
-    }  
+      let rawdate = formatter.format(requestDate);
+      dateFormat = rawdate.replace(/,/g, '');
+      const [weekday, month, day, year] = dateFormat.split(' ');
+      date =`${weekday} ${month.padStart(2, '0')} ${day.padStart(2, '0')} ${year}`;
+    }
+
+    // if (!datePosted) {
+    //   let requestDate = new Date();
+    //   let getDay = requestDate.getDay();
+    //   let getMonth = requestDate.getMonth();  
+    //   date = `${listOfDays[getDay]} ${listOfMonth[getMonth]} ${requestDate.getDate()} ${requestDate.getFullYear()}`
+    // } else {
+    //   let requestDate = new Date(datePosted);
+    //   let getDay = requestDate.getDay();
+    //   let getMonth = requestDate.getMonth();  
+    //   date = `${listOfDays[getDay]} ${listOfMonth[getMonth]} ${requestDate.getDate()} ${requestDate.getFullYear()}`
+    // }  
 
     let id = req.params._id;
 
@@ -127,21 +154,15 @@ app.post('/api/users/:_id/exercises', async function (req, res) {
           description: desc
         };
 
-    let count = await User.find({_id: id})
-
-    User.findOneAndUpdate(
-      {_id : id},
-      { $push : { log : exercises } },
-      function (error, success) {
-        if (error) {
-            console.log(error);
-        } else {
-            console.log(success);
-        }
-      }
-    )
-
       let selectedUser = await User.findById(id);
+
+      selectedUser.update({$push : { log : exercises }}, function (error, success) {
+            if (error) {
+                console.log(error);
+            } else {
+                console.log(success);
+            }
+          })
 
       res.json({
         username: selectedUser['username'],
@@ -150,8 +171,8 @@ app.post('/api/users/:_id/exercises', async function (req, res) {
         date: date,
         _id: id,
       })
-    } catch {
-      console.error()
+    } catch (err) {
+      console.log(err)
       return res.json({error: "Fail The Try Code"})
   }
 })
