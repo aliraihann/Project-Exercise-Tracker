@@ -7,9 +7,10 @@ require('dotenv').config()
 let bodyParser = require('body-parser');
 const { nanoid } = require('nanoid');
 const mongoose = require('mongoose');
+const mongoUri = require('./Info');
 
 // Mongoose Connect-----------------------------------------------------------------------------------------------------------------------------------------------------------------
-mongoose.connect('mongodb+srv://aliraihann:Freakydie10@cluster0.1t6kpdt.mongodb.net/Exercise-Tracker?retryWrites=true&w=majority', { useNewUrlParser: true, useUnifiedTopology: true });
+mongoose.connect(mongoUri, { useNewUrlParser: true, useUnifiedTopology: true });
 
 // Page Display, Access, Tools and Server-------------------------------------------------------------------------------------------------------------------------------------------
 app.use(cors())
