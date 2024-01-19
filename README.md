@@ -1,5 +1,5 @@
 # API Project: Exercise Tracker
-This is the boilerplate for the Exercise Tracker project project, part of the FreeCodeCamp Back End Course Certification.
+This is the boilerplate for the Exercise Tracker project, part of the FreeCodeCamp Back End Course Certification.
 
 Instructions for building the project can be found at https://www.freecodecamp.org/learn/apis-and-microservices/apis-and-microservices-projects/exercise-tracker
 
